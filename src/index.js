@@ -27,9 +27,15 @@ class Card extends React.Component {
 
 //manage current set of cards in players hand
 class Hand extends React.Component {
-
   constructor(props) {
     super(props)
+  }
+
+  render() {
+    return (
+      <div className="playerHand">
+      </div>
+    )
   }
 
 }
@@ -79,16 +85,12 @@ class Deck extends React.Component {
 class Square extends React.Component {
 	constructor(props) {
   	super(props)
-    this.state = { selected: false }
+    this.state = {empty: true}
   }
 
-  //Logic for placing down card
-  onClick(e) {
-  	this.setState({ selected: !this.state.selected })
-  }
   render() {
-  	return <div className="board-cell" onClick={this.onClick.bind(this)}>
-       <span className="board-cell-content">{this.state.selected ? "O" : null}</span>
+  	return <div className="board-cell">
+       <span className="board-cell-content"></span>
   	</div>
   }
 }
@@ -112,7 +114,7 @@ class Board extends React.Component {
 				 return <div key={row} className="board-row">
             {
             	[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map( (col) => {
-          			return <Square key={col}></Square>
+          			return <Square key={[row, col]}></Square>
           		})
             }
             </div>
@@ -138,10 +140,16 @@ class Game extends React.Component{
   }
 
   render() {
+    if(!this.started) {
+      //placing down first card
+      //dealing hand
+
+    }
     return (
       <div className="mainContent">
         <Board></Board>
         <Deck></Deck>
+        <Hand></Hand>
       </div>
     )
   }
