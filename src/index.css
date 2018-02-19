@@ -10,7 +10,7 @@
 }
 
 .board .board-row:last-child .board-cell {
-  margin-bottom: 10px;
+  margin-bottom: 1px;
 }
 
 .board .board-row .board-cell {
@@ -20,17 +20,18 @@
   background-color: #fff;
   height: 50px;
   width: 50px;
-  margin: 10px 0 0 10px;
+  margin: 1px 0 0 1px;
   cursor: pointer;
 
 }
 
 .card img{
   width:50px;
+  position:absolute;
 }
 
 .board .board-row .board-cell:last-child {
-  margin-right: 10px;
+  margin-right: 1px;
 }
 
 .board .board-row .board-cell.selected {

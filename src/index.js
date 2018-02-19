@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 
+//////// Splitting this out into different files once this gets complex enough,
+/////// holding off for now
+
 //create and manage individual cards
 class Card extends React.Component {
   constructor(props) {
@@ -12,6 +15,7 @@ class Card extends React.Component {
   render() {
 
     const cardImage = require('./cards/' + this.props.color + this.props.num + this.props.shape + '.png');
+    console.log(cardImage);
 
   	return <div className="card">
       <img src={cardImage}/>
@@ -24,23 +28,50 @@ class Card extends React.Component {
 //manage current set of cards in players hand
 class Hand extends React.Component {
 
+  constructor(props) {
+    super(props)
+  }
+
 }
 
 
-// ['red','blue','yellow','green'].map((color) => {
-//   ['square','circle','diamond','triangle'].map((shape) => {
-//     return <Card shape={shape num={num} color={color}}></Card>
-//   })
-// })
 //create and manage deck
 class Deck extends React.Component {
-  render() {
-  	return <div className="deck">
-    {
-      [1,2,3,4].map( (num) => {
-        return <Card shape='square' num={num} color='red'></Card>
-      })
+
+  constructor(props) {
+    super(props)
+  }
+
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
     }
+    return a;
+  }
+
+  render() {
+
+    let vals = [[1,2,3,4], ['red','blue','yellow','green'], ['square']];
+
+    //consider switching to foreach? this is messy as hell
+
+    var allCardsDirty = vals[0].map((num) => {
+        return vals[1].map((color) => {
+          return vals[2].map((shape) => {
+            return <Card shape={shape} num={num} color={color}></Card>
+          })
+        })
+      })
+
+    var allCards = allCardsDirty.reduce(function(prev, curr) {
+      return prev.concat(curr);
+    });
+
+    allCards = this.shuffle(allCards);
+
+  	return <div className="deck">
+      {allCards}
       </div>
   }
 }
@@ -64,6 +95,10 @@ class Square extends React.Component {
 
 class Board extends React.Component {
 
+  constructor(props) {
+    super(props)
+  }
+
   render(){
 
   	return (
@@ -84,7 +119,6 @@ class Board extends React.Component {
 
       	})
       }
-      <Deck></Deck>
       </div>
     )
 
@@ -92,6 +126,30 @@ class Board extends React.Component {
 
 }
 
+class Game extends React.Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      started: false,
+      usedCards: [],
+      points: 0,
+      deckIndex: 0
+    }
+  }
+
+  render() {
+    return (
+      <div className="mainContent">
+        <Board></Board>
+        <Deck></Deck>
+      </div>
+    )
+  }
 
 
-ReactDOM.render( <Board />, document.getElementById('root') );
+
+}
+
+
+
+ReactDOM.render( <Game />, document.getElementById('root') );
