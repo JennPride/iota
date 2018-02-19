@@ -15,7 +15,6 @@ class Card extends React.Component {
   render() {
 
     const cardImage = require('./cards/' + this.props.color + this.props.num + this.props.shape + '.png');
-    console.log(cardImage);
 
   	return <div className="card">
       <img src={cardImage}/>
@@ -41,56 +40,23 @@ class Hand extends React.Component {
 }
 
 
-//create and manage deck
-class Deck extends React.Component {
-
-  constructor(props) {
-    super(props)
-  }
-
-  shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  render() {
-
-    let vals = [[1,2,3,4], ['red','blue','yellow','green'], ['square']];
-
-    //consider switching to foreach? this is messy as hell
-
-    var allCardsDirty = vals[0].map((num) => {
-        return vals[1].map((color) => {
-          return vals[2].map((shape) => {
-            return <Card shape={shape} num={num} color={color}></Card>
-          })
-        })
-      })
-
-    var allCards = allCardsDirty.reduce(function(prev, curr) {
-      return prev.concat(curr);
-    });
-
-    allCards = this.shuffle(allCards);
-
-  	return <div className="deck">
-      {allCards}
-      </div>
-  }
-}
-
 class Square extends React.Component {
 	constructor(props) {
   	super(props)
-    this.state = {empty: true}
   }
 
   render() {
+    var square = '';
+    if((this.props.loc[0] == 2 ) && (this.props.loc[1] == 2 )){
+      square = this.props.first;
+    }
+
+    console.log(square);
+
   	return <div className="board-cell">
-       <span className="board-cell-content"></span>
+       <span className="board-cell-content">
+       {this.square}
+       </span>
   	</div>
   }
 }
@@ -105,16 +71,15 @@ class Board extends React.Component {
 
   	return (
 
-      //Consider redesigning to auto resize - aka only have values for the spaces
-      //next to each card
+      //Need to add logic to add rows and cols when the map expands
 
     	<div className="board">
       {
-      	[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map( (row) => {
+      	[1,2,3,4,5].map( (row) => {
 				 return <div key={row} className="board-row">
             {
-            	[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map( (col) => {
-          			return <Square key={[row, col]}></Square>
+            	[1,2,3,4,5].map( (col) => {
+                  return <Square loc={[row, col]} first={this.props.firstCard}></Square>
           		})
             }
             </div>
@@ -129,26 +94,55 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component{
+
   constructor(props) {
     super(props)
     this.state = {
-      started: false,
       usedCards: [],
       points: 0,
-      deckIndex: 0
+      deckIndex: 0,
+      gameStarted: false
     }
   }
 
-  render() {
-    if(!this.started) {
-      //placing down first card
-      //dealing hand
+    shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    performAction(card) {
 
     }
+
+    render() {
+
+      let vals = [[1,2,3,4], ['red','blue','yellow','green'], ['square']];
+
+      //consider switching to foreach? this is messy as hell
+
+      var allCardsDirty = vals[0].map((num) => {
+          return vals[1].map((color) => {
+            return vals[2].map((shape) => {
+              return <Card shape={shape} num={num} color={color}></Card>
+            })
+          })
+        })
+
+      var allCards = allCardsDirty.reduce(function(prev, curr) {
+        return prev.concat(curr);
+      });
+
+      allCards = this.shuffle(allCards);
+
     return (
       <div className="mainContent">
-        <Board></Board>
-        <Deck></Deck>
+        <Board firstCard={allCards[0]}></Board>
+        <div className="deck" onClick={this.performAction(allCards[this.state.deckIndex])}>
+                {allCards}
+                </div>
         <Hand></Hand>
       </div>
     )
